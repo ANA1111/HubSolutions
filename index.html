@@ -1,0 +1,247 @@
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>HubSolutions | Central de Sistemas</title>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            :root {
+                /* Variáveis de transição suave */
+                --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+                
+                /* HubSolutions (Dark Mode) */
+                --hub-bg: #030712;
+                --hub-card: #111827;
+                --hub-primary: #6366f1;
+                --hub-text: #f9fafb;
+                
+                /* Rede do Cuidar (Light Mode) */
+                --rdc-bg: #f8fafc;
+                --rdc-card: #ffffff;
+                --rdc-primary: #0056b3;
+                --rdc-accent: #10b981;
+                --rdc-text: #0f172a;
+            }
+
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+
+            body {
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: background 0.5s ease;
+                overflow: hidden;
+            }
+
+            /* Temas Aplicados ao Body */
+            body.theme-hub { background-color: var(--hub-bg); color: var(--hub-text); }
+            body.theme-rdc { background-color: var(--rdc-bg); color: var(--rdc-text); }
+
+            /* Container Principal com Disposição Corrigida */
+            .container {
+                width: 100%;
+                max-width: 1100px;
+                padding: 2rem;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+                text-align: center;
+            }
+
+            .container.visible {
+                opacity: 1;
+                visibility: visible;
+                transform: translate(-50%, -50%);
+            }
+
+            /* Cabeçalhos */
+            .header { margin-bottom: 3.5rem; }
+            .header h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; }
+            .header p { font-size: 1.1rem; opacity: 0.7; margin-top: 0.5rem; }
+
+            /* Grid de Cards */
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                gap: 2rem;
+                width: 100%;
+            }
+
+            /* Estilização dos Cards */
+            .card {
+                padding: 3rem 2rem;
+                border-radius: 28px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-between; /* Garante que o botão fique sempre embaixo */
+                min-height: 400px;
+                transition: var(--transition);
+                border: 1px solid transparent;
+                position: relative;
+            }
+
+            /* Estilos de Card por Tema */
+            .theme-hub .card { background: var(--hub-card); border-color: rgba(255,255,255,0.05); }
+            .theme-hub .card:hover:not(.disabled) { border-color: var(--hub-primary); transform: translateY(-8px); }
+
+            .theme-rdc .card { background: var(--rdc-card); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+            .theme-rdc .card:hover:not(.disabled) { border-color: var(--rdc-primary); transform: translateY(-8px); }
+
+            /* Ícones */
+            .icon-box {
+                width: 80px; height: 80px;
+                border-radius: 20px;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 2.2rem; margin-bottom: 1.5rem;
+            }
+            .theme-hub .icon-box { background: rgba(99, 102, 241, 0.1); color: var(--hub-primary); }
+            .theme-rdc .icon-box { background: #eff6ff; color: var(--rdc-primary); }
+
+            /* Botões Estilizados e Alinhados */
+            .btn {
+                width: 100%;
+                padding: 1rem 2rem;
+                border-radius: 14px;
+                font-weight: 700;
+                font-size: 1rem;
+                text-decoration: none;
+                border: none;
+                cursor: pointer;
+                transition: var(--transition);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .theme-hub .btn-primary { background: var(--hub-primary); color: white; }
+            .theme-hub .btn-primary:hover { background: #4f46e5; filter: brightness(1.2); }
+
+            .theme-rdc .btn-primary { background: var(--rdc-primary); color: white; }
+            .theme-rdc .btn-primary:hover { background: #004494; box-shadow: 0 8px 20px rgba(0,86,179,0.25); }
+
+            /* Botão de Voltar */
+            .btn-back {
+                background: none; border: none; color: inherit;
+                font-weight: 600; cursor: pointer;
+                margin-bottom: 2rem; display: inline-flex; align-items: center; gap: 8px;
+                opacity: 0.6; transition: 0.3s;
+            }
+            .btn-back:hover { opacity: 1; }
+
+            /* Módulos em Desenvolvimento */
+            .disabled { border-style: dashed !important; opacity: 0.5; cursor: not-allowed; }
+            .dev-badge {
+                font-size: 0.7rem; font-weight: 800; padding: 4px 12px;
+                border-radius: 50px; background: rgba(0,0,0,0.05);
+                position: absolute; top: 20px; right: 20px;
+            }
+
+            /* Correção para mobile */
+            @media (max-width: 768px) {
+                .header h1 { font-size: 2.5rem; }
+                .grid { grid-template-columns: 1fr; }
+                .container { top: 0; transform: translate(-50%, 20px); position: relative; left: 50%; }
+                .container.visible { transform: translate(-50%, 0); }
+                body { overflow-y: auto; align-items: flex-start; }
+            }
+        </style>
+    </head>
+    <body class="theme-hub">
+
+        <div id="page1" class="container visible">
+            <header class="header">
+                <h1 style="background: linear-gradient(to right, #fff, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">HubSolutions</h1>
+                <p>Ecosistema Centralizado de Gestão de Dados</p>
+            </header>
+            <div style="max-width: 300px; margin: 0 auto;">
+                <button class="btn btn-primary" onclick="navTo('page2', 'theme-hub')">
+                    ACESSAR ÁREAS <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="page2" class="container">
+            <button class="btn-back" onclick="navTo('page1', 'theme-hub')"><i class="fa-solid fa-chevron-left"></i> Início</button>
+            <header class="header">
+                <h2>Áreas de Negócio</h2>
+            </header>
+            <div class="grid">
+                <div class="card" onclick="navTo('page3', 'theme-rdc')">
+                    <div class="icon-box"><i class="fa-solid fa-briefcase-medical"></i></div>
+                    <div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Rede Do Cuidar</h3>
+                        <p style="opacity: 0.7;">Gestão completa de assistência domiciliar e saúde.</p>
+                    </div>
+                    <button class="btn btn-primary">Entrar na Área</button>
+                </div>
+
+                <div class="card disabled">
+                    <span class="dev-badge">EM BREVE</span>
+                    <div class="icon-box"><i class="fa-solid fa-snowflake"></i></div>
+                    <div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Infra Técnica</h3>
+                        <p style="opacity: 0.7;">Sistemas de refrigeração e automação industrial.</p>
+                    </div>
+                    <button class="btn" style="background: rgba(255,255,255,0.05); color: gray;" disabled>Aguardando Setup</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="page3" class="container">
+            <button class="btn-back" onclick="navTo('page2', 'theme-hub')"><i class="fa-solid fa-arrow-left"></i> Sair da Área</button>
+            <header class="header">
+                <h1 style="color: var(--rdc-primary); font-size: 2.8rem;">Rede Do Cuidar</h1>
+                <p style="color: var(--rdc-accent); font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">A serviço do seu bem-estar</p>
+            </header>
+            <div class="grid">
+                <div class="card">
+                    <div class="icon-box"><i class="fa-solid fa-chart-line"></i></div>
+                    <div>
+                        <h3 style="color: var(--rdc-primary); font-size: 1.5rem; margin-bottom: 1rem;">GestonCuid Analytics</h3>
+                        <p style="color: #64748b;">Módulo inteligente para monitoramento e análise de indicadores VPS.</p>
+                    </div>
+                    <a href="http://187.127.20.242:3000/dashboard.html" class="btn btn-primary" style="text-decoration: none;">Acessar Módulo</a>
+                </div>
+
+                <div class="card disabled">
+                    <span class="dev-badge">EM DESENVOLVIMENTO</span>
+                    <div class="icon-box"><i class="fa-solid fa-user-gear"></i></div>
+                    <div>
+                        <h3 style="color: var(--rdc-primary); font-size: 1.5rem; margin-bottom: 1rem;">Gestão de Escalas</h3>
+                        <p style="color: #64748b;">Controle de profissionais e escalas de atendimento.</p>
+                    </div>
+                    <button class="btn" style="background: #e2e8f0; color: #94a3b8;" disabled>Indisponível</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function navTo(pageId, theme) {
+                // Troca o tema do body para disparar as cores CSS
+                document.body.className = theme;
+
+                // Esconde todas as seções
+                document.querySelectorAll('.container').forEach(c => {
+                    c.classList.remove('visible');
+                });
+
+                // Ativa a página solicitada
+                setTimeout(() => {
+                    const target = document.getElementById(pageId);
+                    target.classList.add('visible');
+                }, 50);
+            }
+        </script>
+
+    </body>
+    </html>
